@@ -1,0 +1,34 @@
+#!/bin/bash
+
+SRC=haproxy-1.4.22.tar.gz
+SRC_DIR=haproxy-1.4.22
+
+
+source etc/functions
+
+Install_Haproxy()
+{
+	ECHO "Install Haproxy"
+	cd src
+	tar -xzf $SRC
+	cd $SRC_DIR
+	make TARGET=linux26 >/dev/null
+	make install > /dev/null
+	cd ..
+	rm -rf $SRC_DIR
+	cd ..
+	install conf/haproxy.cfg /etc
+	install bin/haproxy-init /etc/init.d/haproxy
+	ln -sf /etc/init.d/haproxy /usr/sbin/rchaproxy
+	groupadd haproxy > /dev/null 2>&1
+	useradd -s /sbin/nologin -g haproxy haproxy > /dev/null 2>&1
+	OHCE "Done" 
+}
+
+print_line 
+print_green "Start Install Haproxy"
+print_line 
+Install_Haproxy
+print_line 
+print_green "Install End"
+print_line 
